@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pragya Mood Game</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(270deg, #ff6ec4, #7873f5, #42e695);
+            background-size: 600% 600%;
+            animation: bg 10s ease infinite;
+            text-align: center;
+            color: white;
+        }
+
+        @keyframes bg {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            padding: 20px;
+            position: relative;
+            top: 40%;
+            transform: translateY(-40%);
+        }
+
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 15px white;
+        }
+
+        p {
+            font-size: 1.1rem;
+        }
+
+        button {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .start {
+            background: #00ffcc;
+            color: black;
+        }
+
+        .catch {
+            background: #ff4d6d;
+            color: white;
+            position: absolute;
+            width: 140px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #gameArea {
+            display: none;
+        }
+
+        #score {
+            font-size: 1.4rem;
+            margin-top: 10px;
+        }
+
+        #aiText {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        #final {
+            display: none;
+            font-size: 1.4rem;
+            margin-top: 20px;
+            color: #fff176;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎮 Pragya Mood Game</h1>
+        <p>Tap and prove you're not serious 😏</p>
+
+        <button class="start" onclick="startGame()">Start</button>
+
+        <div id="gameArea">
+            <p>Catch the button 👇</p>
+            <div id="score">Score: 0</div>
+            <button class="catch" id="btn">Tap Me 😏</button>
+        </div>
+
+        <div id="aiText"></div>
+        <div id="final"></div>
+
+    </div>
+
+    <script>
+        let btn = document.getElementById("btn");
+        let score = 0;
+
+        function moveButton() {
+            let padding = 20;
+            let maxX = window.innerWidth - btn.offsetWidth - padding;
+            let maxY = window.innerHeight - btn.offsetHeight - padding;
+
+            let x = Math.random() * maxX;
+            let y = Math.random() * maxY;
+
+            btn.style.left = x + "px";
+            btn.style.top = y + "px";
+        }
+
+        // For mobile tap
+        btn.addEventListener("touchstart", () => {
+            score++;
+            document.getElementById("score").innerText = "Score: " + score;
+
+            // vibration effect (if supported)
+            if (navigator.vibrate) navigator.vibrate(50);
+
+            if (score >= 5) {
+                endGame();
+            } else {
+                moveButton();
+            }
+        });
+
+        // Also support click (desktop fallback)
+        btn.addEventListener("click", () => {
+            score++;
+            document.getElementById("score").innerText = "Score: " + score;
+
+            if (score >= 5) {
+                endGame();
+            } else {
+                moveButton();
+            }
+        });
+
+        function startGame() {
+            document.querySelector(".start").style.display = "none";
+            document.getElementById("gameArea").style.display = "block";
+            moveButton();
+        }
+
+        function endGame() {
+            document.getElementById("gameArea").style.display = "none";
+
+            let ai = document.getElementById("aiText");
+            ai.style.display = "block";
+
+            let steps = [
+                "🤖 Scanning Pragya...",
+                "Analyzing seriousness...",
+                "Checking hidden fun level...",
+                "Almost done..."
+            ];
+
+            let i = 0;
+
+            let interval = setInterval(() => {
+                ai.innerText = steps[i];
+                i++;
+
+                if (i === steps.length) {
+                    clearInterval(interval);
+
+                    setTimeout(() => {
+                        document.getElementById("final").style.display = "block";
+                        document.getElementById("final").innerHTML = `
+                RESULT 💖<br><br>
+                You tried 😏<br>
+                So you're NOT that serious 😌<br><br>
+                Secret unlocked 🔓<br>
+                <b>You’re actually fun... just hiding it 😄</b><br><br>
+                Now smile a little 😊
+                `;
+                    }, 1000);
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+
+</html>
